@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const OPENAI_URL = "api.openai.com";
 const DEFAULT_PROTOCOL = "https";
@@ -41,4 +41,25 @@ export async function requestOpenai(req: NextRequest) {
     method: req.method,
     body: req.body,
   });
+}
+
+export function createErrorResponse(msg: string, status: number) {
+  return NextResponse.json(
+    {
+      error: true,
+      msg,
+    },
+    { status },
+  );
+}
+
+export function createSuccessResponse(data?: Record<string, any>) {
+  return NextResponse.json(
+    {
+      error: false,
+      msg: "success",
+      data,
+    },
+    { status: 200 },
+  );
 }
