@@ -21,6 +21,7 @@ export type Message = ChatCompletionResponseMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
+  isNew?: boolean;
 };
 
 export function createMessage(override: Partial<Message>): Message {
@@ -103,6 +104,7 @@ interface ChatStore {
   getMemoryPrompt: () => Message;
 
   clearAllData: () => void;
+  newConversation: () => void;
 }
 
 function countMessages(msgs: Message[]) {
@@ -226,7 +228,16 @@ export const useChatStore = create<ChatStore>()(
 
         return session;
       },
-
+      newConversation() {
+        const session = get().currentSession();
+        session.messages.push({
+          role: "user",
+          date: new Date().toLocaleString(),
+          content: "",
+          isNew: true,
+        });
+        session.lastSummarizeIndex = session.messages.length;
+      },
       onNewMessage(message) {
         get().updateCurrentSession((session) => {
           session.lastUpdate = Date.now();

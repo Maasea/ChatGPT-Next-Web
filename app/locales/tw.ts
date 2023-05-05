@@ -34,6 +34,7 @@ const tw: LocaleType = {
       Reset: "重置默认",
       SaveAs: "另存为面具",
     },
+    NewConversation: "新對話",
   },
   Export: {
     Title: "將聊天記錄匯出為 Markdown",

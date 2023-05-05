@@ -35,6 +35,7 @@ const tr: LocaleType = {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",
     },
+    NewConversation: "Yeni Sohbet",
   },
   Export: {
     Title: "Tüm Mesajlar",

@@ -35,6 +35,7 @@ const jp: LocaleType = {
       Reset: "重置默认",
       SaveAs: "另存为面具",
     },
+    NewConversation: "新しい会話",
   },
   Export: {
     Title: "チャット履歴をMarkdown形式でエクスポート",

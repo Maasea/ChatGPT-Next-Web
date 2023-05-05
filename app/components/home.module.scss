@@ -222,6 +222,7 @@
   .sidebar-sub-title {
     display: none;
   }
+
   .sidebar-logo {
     position: relative;
     display: flex;
@@ -373,7 +374,29 @@
     }
   }
 }
+.chat-new-conversation-separator {
+  color: #a2a9b6;
+  border: 0;
+  font-size: 12px;
+  padding: 1em 0;
+  position: relative;
+  -webkit-mask-image: linear-gradient(to right, transparent, black, transparent);
+  mask-image: linear-gradient(to right, transparent, black, transparent);
+}
 
+.chat-new-conversation-separator::before{
+  content: attr(data-content);
+  position: absolute;
+  padding: 0 1ch;
+  line-height: 1px;
+  border: solid #d0d0d5;
+  border-width: 0 99vw;
+  width: fit-content;
+  /* for 不支持fit-content浏览器 */
+  white-space: nowrap;
+  left: 50%;
+  transform: translateX(-50%);
+}
 .chat-message-user > .chat-message-container {
   align-items: flex-end;
 }
@@ -502,6 +525,7 @@
 
       @include single-line();
     }
+
     .hint-content {
       font-size: 12px;
 

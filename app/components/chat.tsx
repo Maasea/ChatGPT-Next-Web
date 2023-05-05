@@ -14,6 +14,7 @@ import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
+import ConversationIcon from "../icons/conversation.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -319,7 +320,9 @@ export function ChatActions(props: {
   scrollToBottom: () => void;
   showPromptHints: () => void;
   hitBottom: boolean;
+  setNewConv: (isNew: boolean) => void;
 }) {
+  const chatStore = useChatStore();
   const config = useAppConfig();
   const navigate = useNavigate();
 
@@ -392,6 +395,15 @@ export function ChatActions(props: {
       >
         <MaskIcon />
       </div>
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={() => {
+          chatStore.newConversation();
+          props.setNewConv(true);
+        }}
+      >
+        <ConversationIcon />
+      </div>
     </div>
   );
 }
@@ -411,6 +423,7 @@ export function Chat() {
   const [userInput, setUserInput] = useState("");
   const [beforeInput, setBeforeInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [newConv, setNewConv] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
@@ -701,7 +714,16 @@ export function Chat() {
             i > 0 &&
             !(message.preview || message.content.length === 0);
           const showTyping = message.preview || message.streaming;
-
+          if (message.isNew) {
+            return (
+              <div key={i}>
+                <hr
+                  className={styles["chat-new-conversation-separator"]}
+                  data-content={Locale.Chat.NewConversation}
+                />
+              </div>
+            );
+          }
           return (
             <div
               key={i}
@@ -797,6 +819,7 @@ export function Chat() {
             inputRef.current?.focus();
             onSearch("");
           }}
+          setNewConv={setNewConv}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea

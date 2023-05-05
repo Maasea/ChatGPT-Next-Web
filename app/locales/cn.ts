@@ -34,6 +34,7 @@ const cn = {
       Reset: "重置默认",
       SaveAs: "另存为面具",
     },
+    NewConversation: "新会话",
   },
   Export: {
     Title: "导出聊天记录为 Markdown",

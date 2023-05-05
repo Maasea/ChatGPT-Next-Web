@@ -35,6 +35,7 @@ const es: LocaleType = {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",
     },
+    NewConversation: "Nueva Conversación",
   },
   Export: {
     Title: "Todos los mensajes",
