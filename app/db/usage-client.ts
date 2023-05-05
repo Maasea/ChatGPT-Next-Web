@@ -36,11 +36,12 @@ const PRICE_MAP = [
     completion: 0.002,
   },
 ];
+
 export async function insertUsage(
   model: string,
   prompt: number,
   completion: number,
-  accessToken: string | null,
+  accessCode: string | null,
   apiKey: string | null,
 ): Promise<string> {
   try {
@@ -51,7 +52,7 @@ export async function insertUsage(
     ).toFixed(6);
 
     const dataToInsert = {
-      accessToken: accessToken ?? "",
+      accessCode: accessCode ?? "",
       apiKey: apiKey ?? "",
       model: model,
       prompt: prompt,
@@ -73,7 +74,7 @@ export async function insertUsage(
 }
 
 export async function queryUsage(
-  token: Array<string> | string | null,
+  accessCode: Array<string> | string | null,
   startDate: string,
   endDate: string,
   isAll: boolean,
@@ -84,11 +85,11 @@ export async function queryUsage(
     };
 
     if (!isAll) {
-      query.accessToken = Array.isArray(token)
-        ? { $in: token }
-        : { $eq: token };
+      query.accessCode = Array.isArray(accessCode)
+        ? { $in: accessCode }
+        : { $eq: accessCode };
     }
-
+    console.log(query);
     return await mongoDb.query<Usage>(COLLECTION_USAGE, query, {
       projection: { _id: 0, apiKey: 0 },
     });

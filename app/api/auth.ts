@@ -16,7 +16,7 @@ function getIP(req: NextRequest) {
   return ip;
 }
 
-function parseApiKey(bearToken: string) {
+export function parseApiKey(bearToken: string) {
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
   const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
 
@@ -65,7 +65,14 @@ export function auth(req: NextRequest) {
     console.log("[Auth] use user api key");
   }
 
+  const adminCode = serverConfig.adminCode;
+  const isAdmin = hashedCode === adminCode;
   return {
     error: false,
+    isAdmin,
+    accessCode,
+    msg: isAdmin
+      ? "success"
+      : "The page you are visiting requires admin privileges",
   };
 }

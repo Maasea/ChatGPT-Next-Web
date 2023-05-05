@@ -3,15 +3,16 @@ import { DBNAME, MongoDB, MONGODB_URI } from "@/app/db/mongodb";
 
 const COLLECTION_USER = process.env.USER ?? "user";
 const mongoDb = new MongoDB(MONGODB_URI, DBNAME);
+
 export async function insertUser(
   name: string,
-  token: String,
+  accessCode: String,
   remark?: string,
 ): Promise<string> {
   try {
     const res = await mongoDb.insert(COLLECTION_USER, {
       name: name,
-      accessToken: token,
+      accessCode: accessCode,
       remark: remark,
     });
     const insertedId = res.insertedId.toString();
@@ -25,7 +26,7 @@ export async function insertUser(
 
 export async function queryUser(
   name?: string | null,
-  token?: string | null,
+  accessCode?: string | null,
 ): Promise<Array<User>> {
   try {
     let query: QueryObject = {};
@@ -33,12 +34,12 @@ export async function queryUser(
     if (name) {
       query.name = name;
     }
-    if (token) {
-      query.accessToken = token;
+    if (accessCode) {
+      query.accessCode = accessCode;
     }
 
     return await mongoDb.query<User>(COLLECTION_USER, query, {
-      projection: { _id: 0, accessToken: 0 },
+      projection: { _id: 0, accessCode: 0 },
     });
   } catch (error) {
     console.error("[Query User]", error);
@@ -47,13 +48,13 @@ export async function queryUser(
 }
 
 export async function updateUser(
-  token: string,
+  accessCode: string,
   update: QueryObject,
 ): Promise<boolean> {
   try {
     return await mongoDb.update(
       COLLECTION_USER,
-      { accessToken: token },
+      { accessCode: accessCode },
       update,
     );
   } catch (error) {
@@ -62,9 +63,9 @@ export async function updateUser(
   }
 }
 
-export async function deleteUser(token: string): Promise<boolean> {
+export async function deleteUser(accessCode: string): Promise<boolean> {
   try {
-    return await mongoDb.delete(COLLECTION_USER, { accessToken: token });
+    return await mongoDb.delete(COLLECTION_USER, { accessCode: accessCode });
   } catch (error) {
     console.error("[Delete User]", error);
     throw error;

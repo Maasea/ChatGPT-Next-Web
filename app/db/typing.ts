@@ -3,7 +3,7 @@ export type QueryObject = {
 };
 
 export type Usage = {
-  accessToken: string;
+  accessCode: string;
   apiKey: string;
   model: string;
   prompt: number;
@@ -14,6 +14,6 @@ export type Usage = {
 
 export interface User {
   name: string;
-  accessToken: string;
+  accessCode: string;
   remark?: string;
 }

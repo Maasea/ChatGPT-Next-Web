@@ -11,7 +11,7 @@ declare global {
     }
   }
 }
-
+const ADMIN_CODE = md5.hash(process.env.ADMIN?.trim() ?? "123456");
 const ACCESS_CODES = (function getAccessCodes(): Set<string> {
   const code = process.env.CODE;
 
@@ -19,6 +19,7 @@ const ACCESS_CODES = (function getAccessCodes(): Set<string> {
     const codes = (code?.split(",") ?? [])
       .filter((v) => !!v)
       .map((v) => md5.hash(v.trim()));
+    codes.push(ADMIN_CODE);
     return new Set(codes);
   } catch (e) {
     return new Set();
@@ -40,5 +41,6 @@ export const getServerSideConfig = () => {
     proxyUrl: process.env.PROXY_URL,
     isVercel: !!process.env.VERCEL,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
+    adminCode: ADMIN_CODE,
   };
 };

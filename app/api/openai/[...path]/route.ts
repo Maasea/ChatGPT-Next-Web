@@ -2,10 +2,19 @@ import { createParser } from "eventsource-parser";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { requestOpenai } from "../../common";
+import {
+  calculateCompletionToken,
+  calculatePromptToken,
+} from "@/app/db/tokenizer";
 
 async function createStream(res: Response) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
+  let completeText = "";
+  let textResolve: any;
+  const textPromise = new Promise((resolve) => {
+    textResolve = resolve;
+  });
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -15,11 +24,15 @@ async function createStream(res: Response) {
           // https://beta.openai.com/docs/api-reference/completions/create#completions/create-stream
           if (data === "[DONE]") {
             controller.close();
+            textResolve(completeText);
             return;
           }
           try {
             const json = JSON.parse(data);
             const text = json.choices[0].delta.content;
+            if (text) {
+              completeText += text;
+            }
             const queue = encoder.encode(text);
             controller.enqueue(queue);
           } catch (e) {
@@ -34,7 +47,7 @@ async function createStream(res: Response) {
       }
     },
   });
-  return stream;
+  return { stream, textPromise };
 }
 
 function formatResponse(msg: any) {
@@ -44,12 +57,39 @@ function formatResponse(msg: any) {
   return new Response(jsonMsg);
 }
 
+async function fetchMongodbUsage(req: Request, completionText: string) {
+  try {
+    const reqBody = await req.json();
+    const prompt = await calculatePromptToken(reqBody.messages, reqBody.model);
+    const completion = await calculateCompletionToken(completionText);
+    const mongodbAPI = new URL(req.url);
+    mongodbAPI.pathname = "/api/mongodb/usage";
+
+    console.log(`[Token] prompt: ${prompt} completion: ${completion}`);
+
+    await fetch(mongodbAPI, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: req.headers.get("Authorization") ?? "",
+      },
+      body: JSON.stringify({
+        model: reqBody.model,
+        prompt: prompt,
+        completion: completion,
+      }),
+    });
+  } catch (e) {
+    console.error("[Fetch Mongodb]", e);
+  }
+}
+
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
   console.log("[OpenAI Route] params ", params);
-
+  const newReq = req.clone();
   const authResult = auth(req);
   if (authResult.error) {
     return NextResponse.json(authResult, {
@@ -64,7 +104,10 @@ async function handle(
 
     // streaming response
     if (contentType.includes("stream")) {
-      const stream = await createStream(api);
+      const { stream, textPromise } = await createStream(api);
+      textPromise.then((text) => {
+        fetchMongodbUsage(newReq, text as string);
+      });
       const res = new Response(stream);
       res.headers.set("Content-Type", contentType);
       return res;
