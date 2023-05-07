@@ -9,6 +9,7 @@ import RightArrowIcon from "@/app/icons/right-arrow.svg";
 import { useCallback, useEffect, useState } from "react";
 import { List, ListItem } from "@/app/components/ui-lib";
 import { Loading } from "@/app/components/home";
+import { useAccessStore } from "@/app/store";
 
 interface DBResponse<T> {
   error: boolean;
@@ -251,9 +252,8 @@ export function Statistics() {
   const [usage, setUsage] = useState<Record<string, any>>({});
   const [users, setUsers] = useState([]);
   const [chartOption, setChartOption] = useState({});
-  const [config, setConfig] = useState("all");
+  const [config, setConfig] = useState(useAccessStore.getState().accessCode);
   const [isAdmin, setIsAdmin] = useState(false);
-
   useEffect(() => {
     requestDBAuth().then(async (res) => {
       const body = await res.json();
