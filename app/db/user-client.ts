@@ -39,7 +39,7 @@ export async function queryUser(
     }
 
     return await mongoDb.query<User>(COLLECTION_USER, query, {
-      projection: { _id: 0, accessCode: 0 },
+      projection: { _id: 0 },
     });
   } catch (error) {
     console.error("[Query User]", error);

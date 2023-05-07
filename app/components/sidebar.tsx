@@ -10,6 +10,7 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
+import StatisticsIcon from "../icons/statistics.svg";
 
 import Locale from "../locales";
 
@@ -154,6 +155,11 @@ export function SideBar(props: { className?: string }) {
             <a href={REPO_URL} target="_blank">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
+          </div>
+          <div className={styles["sidebar-action"]}>
+            <Link to={Path.Statistics}>
+              <IconButton icon={<StatisticsIcon />} shadow />
+            </Link>
           </div>
         </div>
         <div>

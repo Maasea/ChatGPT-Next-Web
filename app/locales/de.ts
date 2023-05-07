@@ -242,6 +242,10 @@ const de: LocaleType = {
     Create: "Create",
     Edit: "Edit",
   },
+  Statistics: {
+    Title: "Statistik",
+    SubTitle: "OpenAi Nutzungsstatistiken",
+  },
 };
 
 export default de;

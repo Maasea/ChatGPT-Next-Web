@@ -16,4 +16,5 @@ export interface User {
   name: string;
   accessCode: string;
   remark?: string;
+  isAdmin?: boolean;
 }

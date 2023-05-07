@@ -12,6 +12,7 @@ export function IconButton(props: {
   className?: string;
   title?: string;
   disabled?: boolean;
+  iconSize?: string;
 }) {
   return (
     <button
@@ -32,6 +33,7 @@ export function IconButton(props: {
             styles["icon-button-icon"] +
             ` ${props.type === "primary" && "no-dark"}`
           }
+          style={{ width: props.iconSize, height: props.iconSize }}
         >
           {props.icon}
         </div>

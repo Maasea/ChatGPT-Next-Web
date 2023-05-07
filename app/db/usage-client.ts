@@ -89,7 +89,7 @@ export async function queryUsage(
         ? { $in: accessCode }
         : { $eq: accessCode };
     }
-    console.log(query);
+
     return await mongoDb.query<Usage>(COLLECTION_USAGE, query, {
       projection: { _id: 0, apiKey: 0 },
     });

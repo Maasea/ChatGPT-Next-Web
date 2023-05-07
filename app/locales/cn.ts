@@ -235,6 +235,10 @@ const cn = {
     Create: "新建",
     Edit: "编辑",
   },
+  Statistics: {
+    Title: "统计",
+    SubTitle: "OpenAi 使用统计",
+  },
 };
 
 export type LocaleType = typeof cn;

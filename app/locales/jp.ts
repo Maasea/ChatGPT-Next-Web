@@ -238,6 +238,10 @@ const jp: LocaleType = {
     Create: "新建",
     Edit: "编辑",
   },
+  Statistics: {
+    Title: "統計",
+    SubTitle: "OpenAiの使用統計",
+  },
 };
 
 export default jp;

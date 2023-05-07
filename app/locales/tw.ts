@@ -230,6 +230,10 @@ const tw: LocaleType = {
     Create: "新建",
     Edit: "编辑",
   },
+  Statistics: {
+    Title: "統計",
+    SubTitle: "OpenAi 使用統計",
+  },
 };
 
 export default tw;

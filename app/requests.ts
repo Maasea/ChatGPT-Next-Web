@@ -283,3 +283,41 @@ export const ControllerPool = {
     return `${sessionIndex},${messageIndex}`;
   },
 };
+
+export function requestDatabase(path: string) {
+  return (params: Record<string, any>, body: any, method = "POST") =>
+    fetch(`/api/mongodb/${path}?${new URLSearchParams(params).toString()}`, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...getHeaders(),
+      },
+      ...(method !== "GET" && { body: JSON.stringify(body) }),
+    });
+}
+
+export async function requestDBUsage(
+  startDate: string,
+  endDate: string,
+  all = false,
+  accessCode?: string,
+) {
+  const params = {
+    all,
+    startDate,
+    endDate,
+    ...(accessCode ? { accessCode } : {}),
+  };
+  return await requestDatabase("usage")(params, "", "GET");
+}
+
+export async function requestDBUser(params: {
+  name?: string;
+  accessCode?: string;
+}) {
+  return await requestDatabase("user")(params, "", "GET");
+}
+
+export async function requestDBAuth() {
+  return await requestDatabase("user/auth")({}, "", "GET");
+}

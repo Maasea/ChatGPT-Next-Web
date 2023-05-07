@@ -1,0 +1,32 @@
+.statistics {
+  padding: 20px;
+  overflow: auto;
+}
+
+.avatar {
+  cursor: pointer;
+}
+
+.statistics-header {
+  display: flex;
+  margin-bottom: 25px;
+
+  .month-title {
+    display: inline-block;
+    font-size: 1.5em;
+    font-weight: 700;
+    margin: 0 0.5em;
+    text-align: center;
+    vertical-align: middle;
+    width: 125px;
+  }
+}
+.chevron {
+  height: 30px;
+  width: 30px;
+}
+
+.usage {
+  padding: 20px;
+  overflow: auto;
+}

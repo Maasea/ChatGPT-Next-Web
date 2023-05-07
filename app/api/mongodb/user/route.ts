@@ -32,8 +32,7 @@ export async function GET(req: NextRequest) {
     const params = new URL(req.url).searchParams;
     const name = params.get("name");
     const accessCode = params.get("accessCode");
-
-    if (name || accessCode) {
+    if (name || accessCode || auth(req).isAdmin) {
       const res = await queryUser(name, accessCode);
       return createSuccessResponse(res);
     } else {
