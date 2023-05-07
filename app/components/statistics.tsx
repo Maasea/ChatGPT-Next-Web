@@ -193,13 +193,14 @@ function DynamicChart(props: {
     all?: boolean,
     user?: string,
   ) => void;
+  accessCode: string;
 }) {
   const [currentMonth, setCurrentMonth] = useState(
     MONTH[currentDate.getMonth()],
   );
   // const [chartOption, setChartOption] = useState({});
-  const { chartOption, updateUsage } = props;
-
+  const { chartOption, updateUsage, accessCode } = props;
+  const all = accessCode === "all";
   useEffect(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
@@ -207,7 +208,7 @@ function DynamicChart(props: {
       .toISOString()
       .split("T")[0];
     const endDate = new Date(Date.UTC(year, month)).toISOString().split("T")[0];
-    updateUsage(startDate, endDate, false);
+    updateUsage(startDate, endDate, all, all ? "" : accessCode);
   }, [updateUsage]);
 
   function changeMonth(newIndex: number) {
@@ -222,7 +223,7 @@ function DynamicChart(props: {
     const endDate = new Date(Date.UTC(year, month + 1))
       .toISOString()
       .split("T")[0];
-    props.updateUsage(startDate, endDate, true);
+    updateUsage(startDate, endDate, all, all ? "" : accessCode);
   }
 
   return (
@@ -252,7 +253,9 @@ export function Statistics() {
   const [usage, setUsage] = useState<Record<string, any>>({});
   const [users, setUsers] = useState([]);
   const [chartOption, setChartOption] = useState({});
-  const [config, setConfig] = useState(useAccessStore.getState().accessCode);
+  const [accessCode, setAccessCode] = useState(
+    useAccessStore.getState().accessCode,
+  );
   const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
     requestDBAuth().then(async (res) => {
@@ -313,16 +316,17 @@ export function Statistics() {
           setLoading={setLoading}
           setUsage={setUsage}
           updateUsage={updateUsage}
+          accessCode={accessCode}
         />
         <div className={styles["usage"]}>
           {isAdmin && (
             <List>
               <ListItem title="User">
                 <select
-                  value={config}
+                  value={accessCode}
                   onChange={(e) => {
-                    const accessCode = e.target.value;
-                    setConfig(accessCode);
+                    const code = e.target.value;
+                    setAccessCode(code);
                     const year = currentDate.getFullYear();
                     const month = currentDate.getMonth();
                     const startDate = new Date(Date.UTC(year, month))
@@ -331,12 +335,7 @@ export function Statistics() {
                     const endDate = new Date(Date.UTC(year, month + 1))
                       .toISOString()
                       .split("T")[0];
-                    updateUsage(
-                      startDate,
-                      endDate,
-                      accessCode === "all",
-                      accessCode,
-                    );
+                    updateUsage(startDate, endDate, code === "all", code);
                   }}
                 >
                   <option key="all" value="all">
